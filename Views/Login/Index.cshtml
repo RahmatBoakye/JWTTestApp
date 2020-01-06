@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/bootstrap.min.css" />
+
+@*scripts here*@
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#loginBtn').click(function () {
+
+            var username = $('#emailTextBox').val();
+            var password = $('#passwordTextbox').val();
+
+            if (username && password) {
+
+                var amberUser =
+                {
+                    UserEmailAddress: username,
+                    Password: password
+                };
+
+                $.ajax({
+                    url: '/Login/GetOrganisations',
+                    type: 'POST',
+                    data: JSON.stringify(amberUser),
+                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
+                    success: function (data) {
+                        console.log('jwt and request id should be ready and created now.');
+
+                        var dataToken = data[0];
+                        var requestId = data[1];
+
+                        console.log('this is data token being sent => ' + dataToken);
+                        console.log('this is requestId being sent => ' + requestId);
+
+                        //Always URL-encode arbitrary strings before putting them into part of a URL
+                        var clientUrl = "http://localhost:60911/ManageImport/GetOrganisations/?id=" + requestId
+                            + "&token=" + encodeURIComponent(dataToken);
+
+                        window.location.href = clientUrl;
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert('error')
+                    }
+                })
+            }
+            else {
+                alert("username or password cannot be empty !!!!");
+            }
+        });
+
+        $('#cancelBtn').click(function () {
+            window.location.href = "http://localhost:60911/Organisation/Index/"
+        })
+    });
+
+</script>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4><b>This will be the new JCB Login Page.</b></h4>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input id="emailTextBox" type="text" class="form-control" name="email" placeholder="Enter email here" />
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input id="passwordTextbox" type="password" class="form-control" name="password" placeholder="Enter password here" />
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="col-md-5">
+                    <button id="loginBtn" class="btn btn-success btn-sm" style="width:150px;">
+                        <span><i class="glyphicon glyphicon-log-in"></i></span> Login
+                    </button>
+                </div>
+                <div class="col-md-5">
+                    <button id="cancelBtn" class="btn btn-warning btn-sm" style="width:150px;">
+                        <span><i class="glyphicon glyphicon-log-out"></i></span> Cancel
+                    </button>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
